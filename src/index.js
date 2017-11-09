@@ -13,13 +13,20 @@ import rootReducer from './rootReducer';
 import "semantic-ui-css/semantic.min.css";
 import {userLoggedIn} from './actions/auth';
 
+import decode from 'jwt-decode';
+
 const store = createStore(
 	rootReducer,
 	composeWithDevTools(applyMiddleware(thunk))
 );
 
 if(localStorage.bookwormJWT){
-	const user ={ token: localStorage.bookwormJWT }
+	const payload = decode(localStorage.bookwormJWT);
+	const user ={ 
+		token: localStorage.bookwormJWT,
+		email: payload.email,
+		confirmed: payload.confirmed
+		};
 	store.dispatch(userLoggedIn(user));
 }
 
